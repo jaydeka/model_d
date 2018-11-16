@@ -3,7 +3,7 @@
 import layers_cc as layers
 
 
-def baseline(x,view_type,   parameters, nodropout_probability=None, gaussian_noise_std=None):
+def baseline(x,view_type,    nodropout_probability=None, gaussian_noise_std=None):
     #x,view_type = input
 
     if gaussian_noise_std is not None:
@@ -51,5 +51,5 @@ def baseline(x,view_type,   parameters, nodropout_probability=None, gaussian_noi
 
 class BaselineBreastModel:
 
-    def __init__(self, x, view_type,parameters, nodropout_probability=0.5, gaussian_noise_std=1):
-        self.y_prediction_birads = baseline(x, view_type, parameters, nodropout_probability, gaussian_noise_std)
+    def __init__(self, x, view_type, nodropout_probability=0.5, gaussian_noise_std=1):
+        self.y_prediction_birads = baseline(x, view_type,  nodropout_probability, gaussian_noise_std)

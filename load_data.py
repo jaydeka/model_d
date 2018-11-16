@@ -41,11 +41,14 @@ def load_dataset(dataset_folder,  xlsx):
         if str(list_of_patient[i][1]) == "RIGHT":
             try:
                 temp_image = cv2.imread(temp_path, 0)
+                if temp_image is None :
+                    print("Image Not Available: ", temp_path)
                 temp_image = cv2.resize(temp_image, (2000, 2600))
                 temp_image = np.array(temp_image).reshape(1, 2000, 2600, 1)
                 if temp_image is not None:
                     array_images.append([temp_image, list_of_patient[i][2]])
                     count += 1
+
             except Exception as error:
                 print(error)
 

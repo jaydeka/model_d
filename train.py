@@ -33,7 +33,7 @@ x = (x_img)
 y = tf.placeholder(tf.float32, shape=(1, 3))
 
 #train the network
-prediction = model_cc.baseline(x, x_str,  parameters=None)
+prediction = model_cc.baseline(x, x_str)
 cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=prediction, labels=y))
 # optimizer = tf.train.AdamOptimizer(learning_rate).minimize(cost)
 correct_prediction = tf.equal(tf.argmax(prediction, 1), tf.argmax(y, 1))
@@ -71,7 +71,7 @@ with tf.Session() as sess:
     print("Started Training...")
 
     for epoch in range(no_epochs):
-        for j in range(len(array_images) - 2):
+        for j in range(50):
         #for j in range(2):
             train_x1_rcc = array_images[j]
             x1, x2 = train_x1_rcc
