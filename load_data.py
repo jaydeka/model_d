@@ -74,6 +74,5 @@ def load_dataset(dataset_folder,  xlsx):
                 train_y = matrix([[0, 0, 1]])
             array_target.append(train_y)
 
-    #print("Total dataset count: ", len(array_images))
     return array_images, array_target
 

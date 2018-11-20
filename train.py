@@ -15,6 +15,7 @@ learning_rate = config.hyperparameter_train["learning_rate"]
 batch_size = config.hyperparameter_train["batch_size"]
 no_epochs = config.hyperparameter_train["no_epochs"]
 n_classes = config.hyperparameter_train["n_classes"]
+model_save = config.model_ckpts["saved_model"]
 
 #load train and test dataset
 print("Loading train data... ")
@@ -66,7 +67,7 @@ with tf.Session() as sess:
     valid_accuracy = []
     train_accuracy = []
     test_accuracy = []
-    summary_writer = tf.summary.FileWriter("E:/model_d/output", sess.graph)
+    summary_writer = tf.summary.FileWriter(config.model_ckpts["model_output"], sess.graph)
     iterator = 0
     print("Started Training...")
 
@@ -134,4 +135,4 @@ with tf.Session() as sess:
 
     summary_writer.close()
 
-    savePath = saver.save(sess, 'E:/model_d/agp_birads_model_d.ckpt')
+    savePath = saver.save(sess, model_save)

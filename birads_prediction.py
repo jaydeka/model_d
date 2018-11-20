@@ -3,40 +3,33 @@ import tensorflow as tf
 import cv2
 import numpy as np
 import model_cc as models_cc
+import config as config
 import model_mlo as models_mlo
 import utils
+import os
+import glob
 
 
 def inference(parameters, verbose=True):
-    """
-    Function that creates a model, loads the parameters, and makes a prediction
-    :param parameters: dictionary of parameters
-    :param verbose: Whether to print predicted probabilities
-    :return: Predicted probabilities for each class
-    """
 
-    model_path = 'E:\model_b/agp_birads_model_b.ckpt'
+    model_path = config.model_ckpts["saved_model"]
     device_type = "cpu"
     gpu_number = 0
-    image_path = "C:/Users/archit.kushwaha.AGILiAD\PycharmProjects\model_d\images/"
-    tf.set_random_seed(7)
+    image_path = config.folder_path["inference_image"]
 
+    tf.set_random_seed(7)
     with tf.Graph().as_default():
         with tf.device('/' + device_type):
             # initialize input holders
-
             x_r_cc = tf.placeholder(tf.float32, shape=[1, 2000, 2600, 1])
             x =  x_r_cc
             # holders for dropout and Gaussian noise
             nodropout_probability = tf.placeholder(tf.float32, shape=())
             gaussian_noise_std = tf.placeholder(tf.float32, shape=())
-
             # construct models
             model_cc = models_cc.BaselineBreastModel(x, nodropout_probability, gaussian_noise_std)
             y_prediction_birads_cc = model_cc.y_prediction_birads
 
-            #model_mlo = models_mlo.BaselineBreastModel(parameters, x, nodropout_probability, gaussian_noise_std)
-            #y_prediction_birads_mlo = model_mlo.y_prediction_birads
         if parameters['device_type'] == 'gpu':
             session_config = tf.ConfigProto()
             session_config.gpu_options.visible_device_list = str(parameters['gpu_number'])
@@ -48,19 +41,23 @@ def inference(parameters, verbose=True):
         with tf.Session(config=session_config) as session:
             session.run(tf.global_variables_initializer())
 
-
         with tf.Session(config=session_config) as session:
             session.run(tf.global_variables_initializer())
 
             # loads the pre-trained parameters if it's provided
             saver = tf.train.Saver(max_to_keep=None)
-            saver.restore(session, 'E:\model_b/agp_birads_model_b.ckpt')
+            saver.restore(session, config.model_ckpts["saved_model"] )
 
             # load input images
-            datum_r_cc = cv2.imread("C:/Users/archit.kushwaha.AGILiAD\PycharmProjects\model_d\images/_00079_RIGHT_CC.png",0)
+            for filename in glob.glob(os.path.join(config.folder_path["inference_image"], '*.png')):
+                temp_path = filename
+                temp_view = str(filename).split("_")[-1]
+                temp_view = str(temp_view).split(".")[0]
+                print("View Type: ", temp_view)
+
+            datum_r_cc = cv2.imread(temp_path,0)
             datum_r_cc = cv2.resize(datum_r_cc, (2000, 2600))
             datum_r_cc = np.array(datum_r_cc).reshape(1, 2000, 2600, 1)
-
 
             # populate feed_dict for TF session
             # No dropout and no gaussian noise in inference
@@ -71,7 +68,7 @@ def inference(parameters, verbose=True):
             }
 
             # run the session for a prediction
-            view_type = "CC"
+            view_type = temp_view
             if view_type == "CC":
                 prediction_birads = session.run(y_prediction_birads_cc, feed_dict=feed_dict_by_model)
 
@@ -93,10 +90,10 @@ def inference(parameters, verbose=True):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='Run Inference')
-    parser.add_argument('--model-path', default='saved_models/agp_birads.ckpt')
+    parser.add_argument('--model-path', default= config.model_ckpts["saved_model"])
     parser.add_argument('--device-type', default="cpu")
     parser.add_argument('--gpu-number', default=0, type=int)
-    parser.add_argument('--image-path', default="images/")
+    parser.add_argument('--image-path', default=config.folder_path["inference_image"])
     args = parser.parse_args()
 
     parameters_ = {
