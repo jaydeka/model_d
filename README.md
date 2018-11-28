@@ -3,7 +3,6 @@ Deep Learning Algorithm Development
 
 Deployment
 
-Portal: http://hitachiaiportal.s3-website-ap-northeast-1.amazonaws.com/monitormodel 
 
 Step 1: Dataset Registration
 	Dataset URL has to be registered here
