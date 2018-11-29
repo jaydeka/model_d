@@ -96,14 +96,14 @@ with tf.Session() as sess:
         #for k in range(2):
             test_X = array_images_test[k]
             x1, x2 = test_X
-            test_y = array_target_test[k]
+            valid_y = array_target_test[k]
             if str(x2) == "CC":
-                feed_dict_model = {x_img:x1, x_str:x2, y: test_y}
+                feed_dict_model = {x_img:x1, x_str:x2, y: valid_y}
                 validation_acc, validation_loss = sess.run([accuracy, cost], feed_dict=feed_dict_model)
                 valid_loss.append(validation_loss)
                 valid_accuracy.append(validation_acc)
             if str(x2) == "MLO":
-                feed_dict_model = {x_img: x1, x_str: x2, y: test_y}
+                feed_dict_model = {x_img: x1, x_str: x2, y: valid_y}
                 validation_acc, validation_loss = sess.run([accuracy_mlo, cost_mlo], feed_dict=feed_dict_model)
                 valid_loss.append(validation_loss)
                 valid_accuracy.append(validation_acc)
@@ -120,12 +120,12 @@ with tf.Session() as sess:
             x1, x2 = test_X
             test_y = array_target_test[l]
             if str(x2) == "CC":
-                feed_dict_model = {x_img:x1, x_str:x2,  y: train_y}
+                feed_dict_model = {x_img:x1, x_str:x2,  y: test_y}
                 test_acc_temp, test_loss_temp = sess.run([accuracy, cost], feed_dict=feed_dict_model)
                 test_loss.append(test_loss_temp)
                 test_accuracy.append(test_acc_temp)
             if str(x2) == "MLO":
-                feed_dict_model = {x_img: x1, x_str: x2, y: train_y}
+                feed_dict_model = {x_img: x1, x_str: x2, y: test_y}
                 test_acc_temp, test_loss_temp = sess.run([accuracy_mlo, cost_mlo], feed_dict=feed_dict_model)
                 test_loss.append(test_loss_temp)
                 test_accuracy.append(test_acc_temp)
